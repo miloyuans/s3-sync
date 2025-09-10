@@ -9,10 +9,8 @@ import (
 	"log"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
@@ -36,7 +34,7 @@ type Config struct {
 }
 
 func main() {
-	configFile := flag.String("config", ".config.json", "Path to configuration file")
+	configFile := flag.String("config", "config.json", "Path to configuration file")
 	flag.Parse()
 
 	// Read configuration
@@ -239,7 +237,7 @@ func syncBucketConfig(ctx context.Context, sourceClient, destClient *s3.Client, 
 }
 
 func copyAndVerifyObject(ctx context.Context, sourceClient, destClient *s3.Client, sourceBucket, destBucket, key string, sourceSize int64, sourceETag string) error {
-	// Get source object metadata and tags
+	// Get source object metadata
 	headInput := &s3.HeadObjectInput{
 		Bucket: aws.String(sourceBucket),
 		Key:    aws.String(key),
@@ -247,15 +245,6 @@ func copyAndVerifyObject(ctx context.Context, sourceClient, destClient *s3.Clien
 	headOutput, err := sourceClient.HeadObject(ctx, headInput)
 	if err != nil {
 		return fmt.Errorf("failed to head source object %s: %w", key, err)
-	}
-
-	// Get source object tags
-	tagsOutput, err := sourceClient.GetObjectTagging(ctx, &s3.GetObjectTaggingInput{
-		Bucket: aws.String(sourceBucket),
-		Key:    aws.String(key),
-	})
-	if err != nil {
-		return fmt.Errorf("failed to get source object tags for %s: %w", key, err)
 	}
 
 	// Copy object with metadata and tags
