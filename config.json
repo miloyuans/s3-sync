@@ -1,0 +1,16 @@
+{
+  "source": {
+    "access_key": "YOUR_SOURCE_ACCESS_KEY",
+    "secret_key": "YOUR_SOURCE_SECRET_KEY",
+    "region": "us-east-1",
+    "bucket": "source-bucket-name"
+  },
+  "destination": {
+    "access_key": "YOUR_DEST_ACCESS_KEY",
+    "secret_key": "YOUR_DEST_SECRET_KEY",
+    "region": "us-east-1",
+    "bucket": "destination-bucket-name"
+  },
+  "concurrency": 30,
+  "max_retries": 3
+}
